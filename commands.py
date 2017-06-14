@@ -30,6 +30,7 @@ listening: Dict[EventId, ListeningEvent] = {}
 SyncCommand = NamedTuple('SyncCommand', [
     ('args', List[ArgumentType]),
     ('fn', Callable),
+    ('allow_trailing', bool),
 ])
 
 AdminCommand = NamedTuple('AdminCommand', [
@@ -231,10 +232,10 @@ def intersect_fn(slack_client, channel: Channel, args: List[str]):
 
 
 COMMANDS: Dict[str, Union[SyncCommand, VoteCommand, AdminCommand]] = {
-    '.help': SyncCommand([], help_fn),
-    '.ping': SyncCommand([], pong_fn),
+    '.help': SyncCommand([], help_fn, False),
+    '.ping': SyncCommand([], pong_fn, False),
     '.update': AdminCommand([], update_fn),
-    '.intersect': SyncCommand([ArgumentType.CHANNEL, ArgumentType.CHANNEL], intersect_fn),
+    '.intersect': SyncCommand([ArgumentType.CHANNEL, ArgumentType.CHANNEL], intersect_fn, True),
     '.vote': VoteCommand(
         [ArgumentType.COMMAND, ArgumentType.INT],
         vote_fn,

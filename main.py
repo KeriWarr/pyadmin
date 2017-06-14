@@ -89,9 +89,9 @@ def process_events(events):
             typs, vals = parse_arguments(argv[1:])
             logging.info(f'argv={argv} parse_types={typs} parse_values={vals}')
 
-            if command.args == typs:
+            if command.args == typs or (command.allow_trailing and command.args == typs[:len(command.args)]):
                 try:
-                    handler(command, event, vals, slack_client)
+                    handler(command, event, vals[:len(command.args)], slack_client)
                 except ApiCallException as e:
                     logging.warning(e)
                 except:
